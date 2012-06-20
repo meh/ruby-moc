@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-module Cmus; class Controller
+module Moc; class Controller
 
 class Player
 	attr_reader :controller
@@ -17,42 +17,33 @@ class Player
 		@controller = controller
 	end
 
-	# play the current selection or the passed file
-	def play (file = nil)
-		if file
-			controller.puts "player-play #{File.real_path(File.expand_path(file))}"
-		else
-			controller.puts 'player-play'
-		end
+	def play
+		controller.send_command :unpause
 	end
 
 	# pause the current song
 	def pause
-		return if controller.status == :paused
-
-		controller.puts 'player-pause'
+		controller.send_command :pause
 	end
 
 	# unpause the current song
 	def unpause
-		return unless controller.status == :paused
-
-		controller.puts 'player-pause'
+		controller.send_command :unpause
 	end
 
 	# stop the current song
 	def stop
-		controller.puts 'player-stop'
+		controller.send_command :stop
 	end
 
 	# go to the next song in the playlist
 	def next
-		controller.puts 'player-next'
+		controller.send_command :next
 	end
 
 	# go to the previous song in the playlist
 	def prev
-		controller.puts 'player-prev'
+		controller.send_command :prev
 	end
 
 	# change the volume
@@ -62,7 +53,14 @@ class Player
 
 	# seek to the passed second
 	def seek (second)
-		controller.puts "seek #{second}"
+		controller.send_command :seek
+		controller.send_integer second
+	end
+
+	# jump to the passed second
+	def jump_to (second)
+		controller.send_command :jump_to
+		controller.send_integer second
 	end
 end
 

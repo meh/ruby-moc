@@ -8,8 +8,26 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+require 'stringio'
+
+module Moc; module Protocol
+
+module Type
+	def read (io)
+		raise 'no read has been implemented'
+	end
+
+	def unpack (text)
+		read(StringIO.new(text))
+	end
+end
+
+end; end
+
 require 'moc/protocol/integer'
+require 'moc/protocol/time'
 require 'moc/protocol/string'
+require 'moc/protocol/symbol'
 require 'moc/protocol/command'
 require 'moc/protocol/event'
 require 'moc/protocol/state'

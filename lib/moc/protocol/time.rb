@@ -10,18 +10,11 @@
 
 module Moc; module Protocol
 
-class String < ::String
+class Time < ::Time
 	extend Type
 
 	def self.read (io)
-		length = Integer.read(io)
-		string = io.read(length)
-
-		new(string)
-	end
-
-	def pack
-		Integer.new(length).pack << self
+		at Integer.read(io)
 	end
 end
 

@@ -11,18 +11,18 @@
 module Moc; module Protocol
 
 class Integer < BasicObject
-	def self.unpack (text)
-		new(text.unpack('l').first).tap {
-			text[0, 4] = ''
-		}
+	extend Type
+
+	def self.read (io)
+		new(io.read(4).unpack('l').first)
 	end
 
 	def initialize (value)
 		@internal = value
 	end
 
-	def respond_to_missing? (id)
-		@internal.respond_to?(id)
+	def respond_to_missing? (id, include_private = false)
+		@internal.respond_to? id, include_private
 	end
 
 	def method_missing (id, *args, &block)
