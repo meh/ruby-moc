@@ -17,6 +17,7 @@ class Toggle
 		@controller = controller
 	end
 
+	# toggle the named item
 	def toggle (name)
 		controller.send_command :get_option
 		controller.send_string  name
@@ -30,6 +31,7 @@ class Toggle
 		self
 	end
 
+	# activate the named item
 	def on (name)
 		controller.send_command :set_option
 		controller.send_string  name
@@ -38,6 +40,7 @@ class Toggle
 		self
 	end
 
+	# deactivate the named item
 	def off (name)
 		controller.send_command :set_option
 		controller.send_string  name
@@ -46,6 +49,7 @@ class Toggle
 		self
 	end
 
+	# check if an item is active
 	def on? (name)
 		controller.send_command :get_option
 		controller.send_string  name
@@ -68,6 +72,7 @@ class Toggle
 		off :Repeat
 	end
 
+	# check if repeat is enabled
 	def repeat?
 		on? :Repeat
 	end
@@ -87,6 +92,7 @@ class Toggle
 		off :Shuffle
 	end
 
+	# check if shuffle is enabled
 	def shuffle?
 		on? :Shuffle
 	end
@@ -106,6 +112,7 @@ class Toggle
 		off :AutoNext
 	end
 
+	# check if auto next is enabled
 	def auto_next?
 		on? :AutoNext
 	end

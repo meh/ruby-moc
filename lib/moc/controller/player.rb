@@ -20,6 +20,7 @@ class Player
 			@controller = controller
 		end
 
+		# add an item to the queue
 		def add (file)
 			controller.send_command :queue_add
 			controller.send_string File.realpath(File.expand_path(file))
@@ -27,6 +28,7 @@ class Player
 			self
 		end
 
+		# remove an item from the queue
 		def remove (file)
 			controller.send_command :queue_del
 			controller.send_string File.realpath(File.expand_path(file))
@@ -34,16 +36,19 @@ class Player
 			self
 		end
 
+		# swap two items
 		def move (from, to)
 			self
 		end
 
+		# clear the queue
 		def clear
 			controller.send_command :queue_clear
 
 			self
 		end
 
+		# iterate over the queued items
 		def each (&block)
 			controller.send_command :get_queue
 			controller.wait_for     :data
@@ -107,6 +112,7 @@ class Player
 		controller.send_integer second
 	end
 
+	# return the queue
 	def queue
 		@queue ||= Queue.new(controller)
 	end
