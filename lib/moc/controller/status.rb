@@ -30,20 +30,17 @@ class Status
 
 		def bitrate
 			controller.send_command :get_bitrate
-
-			class << controller.get_integer
-				def average
-					controller.send_command :get_avg_bitrate
-					controller.get_integer
-				end
-
-				self
-			end
+			controller.get_integer
+		end
+		
+		def average_bitrate
+			controller.send_command :get_avg_bitrate
+			controller.get_integer
 		end
 
 		def time
 			controller.send_command :get_ctime
-			controller.get_time
+			controller.get_integer
 		end
 
 		def file
@@ -52,15 +49,24 @@ class Status
 		end
 
 		def tags
-			controller.send_command :get_tags
-			controller.get_tags
+			path = file
+
+			controller.send_command :get_file_tags
+			controller.send_string  path
+			controller.send_integer 0x01 | 0x02
+
+			controller.wait_for(:file_tags).tags
 		end
 
-		%w[title artist album track filled].each {|name|
+		%w[title artist album track].each {|name|
 			define_method name do
 				tags.send name
 			end
 		}
+
+		def inspect
+			"#<#{self.class.name}: track=#{track} title=#{title} artist=#{artist} album=#{album} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{time}>"
+		end
 	end
 
 	attr_reader :controller
@@ -84,7 +90,7 @@ class Status
 	end
 
 	def song
-		return unless self == :play
+		return if self == :stop
 
 		Song.new(controller)
 	end

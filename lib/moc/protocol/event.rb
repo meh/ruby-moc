@@ -44,6 +44,20 @@ class Event < Symbol
 			QUEUE_CLEAR: 0x57
 		}
 	end
+
+	attr_accessor :data
+
+	def respond_to_missing? (id, include_private = false)
+		data.respond_to?(id, include_private)
+	end
+
+	def method_missing (id, *args, &block)
+		if data.respond_to? id
+			return data.__send__ id, *args, &block
+		end
+
+		super
+	end
 end
 
 end; end

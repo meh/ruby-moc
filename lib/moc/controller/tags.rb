@@ -10,23 +10,24 @@
 
 module Moc; class Controller
 
-class Tags < Struct.new(:title, :artist, :album, :track, :time, :filled)
+class Tags < Struct.new(:title, :artist, :album, :track, :time)
 	attr_reader :controller
 
 	def initialize (controller)
 		@controller = controller
 
-		controller.send_command :get_tags
-
 		super(
-			controller.get_string,
-			controller.get_string,
-			controller.get_string,
-			controller.get_integer,
-			controller.get_integer,
-			controller.get_integer
+			controller.read_string,
+			controller.read_string,
+			controller.read_string,
+			controller.read_integer,
+			controller.read_integer
 		)
+
+		controller.read_integer
 	end
 end
+
+FileTags = Struct.new(:file, :tags)
 
 end; end

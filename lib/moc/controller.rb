@@ -16,6 +16,7 @@ require 'moc/controller/toggle'
 require 'moc/controller/player'
 require 'moc/controller/status'
 require 'moc/controller/tags'
+require 'moc/controller/playlist'
 
 module Moc
 
@@ -81,53 +82,79 @@ class Controller
 	end
 
 	def read_event
-		Protocol::Event.read(@socket)
+		Protocol::Event.read(@socket).tap {|event|
+			event.data = case event.to_sym
+				when :PLIST_ADD, :QUEUE_ADD
+					get_item
+				
+				when :PLIST_DEL, :QUEUE_DEL, :STATUS_MSG
+					get_string
+
+				when :FILE_TAGS
+					FileTags.new(read_string, read_tags)
+
+				when :PLIST_MOVE, :QUEUE_MOVE
+					Move.new(read_string, read_string)
+			end
+		}
 	end
 
 	def read_state
 		Protocol::State.read(@socket)
 	end
 
+	def read_item
+		Playlist::Item.new(self)
+	end
+
+	def read_tags
+		Tags.new(self)
+	end
+
 	%w[string integer time event state].each {|name|
 		define_method "get_#{name}" do
-			wait_for_data
+			wait_for :data
 
 			__send__ "read_#{name}"
 		end
 	}
 
-	def get_tags
-		send_command :get_tags
-
-		Tags.new(get_string, get_string, get_string, get_integer, get_integer, get_integer)
-	end
-
-	def on (event, &block)
-		@events[event.to_sym.upcase] << block
+	def on (event = nil, &block)
+		@events[event ? nil : event.to_sym.upcase] << block
 	end
 
 	def fire (event)
-		@events[event].each {|block|
-			block.call
+		name = event.to_sym
+
+		@events[nil].each {|block|
+			block.call(event)
+		}
+
+		@events[name].each {|block|
+			block.call(event)
 		}
 	end
 
+	private :fire
+
 	def loop
-		while (event = read_event)
-			fire event.to_sym
+		while event = read_event
+			fire event
 		end
 	end
 
-	def wait_for_data
-		while (event = read_event) != :data
-			fire event.to_sym
+	def wait_for (name)
+		while (event = read_event) != name
+			fire event
 		end
+
+		event
 	end
 
 	def active?
 		send_command :ping
 
-		read_event.tap { |x| puts x.inspect } == :pong
+		read_event == :pong
 	rescue
 		false
 	end
@@ -146,6 +173,10 @@ class Controller
 
 	def status
 		@status ||= Status.new(self)
+	end
+
+	def inspect
+		"#<#{self.class.name}: #{@path}>"
 	end
 end
 
