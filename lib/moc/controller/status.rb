@@ -84,7 +84,7 @@ class Status
 		controller.get_state
 	end
 
-	def mixer
+	def volume
 		controller.send_command :get_mixer
 		controller.get_integer
 	end

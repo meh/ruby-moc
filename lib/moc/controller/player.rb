@@ -11,6 +11,49 @@
 module Moc; class Controller
 
 class Player
+	class Queue
+		include Enumerable
+
+		attr_reader :controller
+
+		def initialize (controller)
+			@controller = controller
+		end
+
+		def add (file)
+			controller.send_command :queue_add
+			controller.send_string File.realpath(File.expand_path(file))
+
+			self
+		end
+
+		def remove (file)
+			controller.send_command :queue_del
+			controller.send_string File.realpath(File.expand_path(file))
+
+			self
+		end
+
+		def move (from, to)
+			self
+		end
+
+		def clear
+			controller.send_command :queue_clear
+
+			self
+		end
+
+		def each (&block)
+			controller.send_command :get_queue
+			controller.wait_for     :data
+
+			until (item = controller.read_item).nil?
+				block.call(item)
+			end
+		end
+	end
+
 	attr_reader :controller
 
 	def initialize (controller)
@@ -48,7 +91,8 @@ class Player
 
 	# change the volume
 	def volume (volume)
-		controller.puts "vol #{volume}"
+		controller.send_command :set_mixer
+		controller.send_integer volume
 	end
 
 	# seek to the passed second
@@ -61,6 +105,10 @@ class Player
 	def jump_to (second)
 		controller.send_command :jump_to
 		controller.send_integer second
+	end
+
+	def queue
+		@queue ||= Queue.new(controller)
 	end
 end
 

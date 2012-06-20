@@ -16,8 +16,23 @@ class Playlist
 
 		def initialize (controller)
 			@controller = controller
+			
+			if (file = controller.read_string).empty?
+				@nil = true
+			else
+				@nil = false
 
-			super(controller.get_string, controller.get_string, controller.tags, controller.get_time)
+				super(
+					file,
+					controller.read_string,
+					controller.read_tags,
+					controller.read_time
+				)
+			end
+		end
+
+		def nil?
+			@nil
 		end
 	end
 end
