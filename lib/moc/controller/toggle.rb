@@ -57,65 +57,25 @@ class Toggle
 		!controller.get_integer.zero?
 	end
 
-	# toggle the repeat status
-	def repeat
-		toggle :Repeat
-	end
+	%[repeat shuffle auto_next].each {|name|
+		option_name = name.capitalize.gsub(/_(\w)/) { $1.upcase }
 
-	# enable repeat
-	def repeat!
-		on :Repeat
-	end
+		define_method name do
+			toggle option_name
+		end
 
-	# disable repeat
-	def no_repeat!
-		off :Repeat
-	end
+		define_method "#{name}!" do
+			on option_name
+		end
 
-	# check if repeat is enabled
-	def repeat?
-		on? :Repeat
-	end
+		define_method "no_#{name}!" do
+			off option_name
+		end
 
-	# toggle the shuffle status
-	def shuffle
-		toggle :Shuffle
-	end
-
-	# enable shuffle
-	def shuffle!
-		on :Shuffle
-	end
-
-	# disable shuffle
-	def no_shuffle!
-		off :Shuffle
-	end
-
-	# check if shuffle is enabled
-	def shuffle?
-		on? :Shuffle
-	end
-
-	# toggle the auto next status
-	def auto_next
-		toggle :AutoNext
-	end
-
-	# enable auto next
-	def auto_next!
-		on :AutoNext
-	end
-
-	# disable auto next
-	def no_auto_next!
-		off :AutoNext
-	end
-
-	# check if auto next is enabled
-	def auto_next?
-		on? :AutoNext
-	end
+		define_method "#{name}?" do
+			on? option_name
+		end
+	}
 
 	# toggle the pause status
 	def pause
