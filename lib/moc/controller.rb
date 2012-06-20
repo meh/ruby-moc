@@ -50,7 +50,7 @@ class Controller
 	end
 
 	def send (object)
-		write object.pack
+		@socket.write object.respond_to?(:pack) ? object.pack : object.to_s
 	end
 
 	def send_command (command)
@@ -104,11 +104,15 @@ class Controller
 	end
 
 	def read_item
-		Playlist::Item.new(self)
+		return if (file = read_string).empty?
+
+		Playlist::Item.new(file, read_string, read_tags, read_time)
 	end
 
 	def read_tags
-		Tags.new(self)
+		Tags.new(read_string, read_string, read_string, read_integer, read_integer).tap {
+			read_integer
+		}
 	end
 
 	%w[string integer time event state].each {|name|

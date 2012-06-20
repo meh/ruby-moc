@@ -57,7 +57,7 @@ class Toggle
 		!controller.get_integer.zero?
 	end
 
-	%[repeat shuffle auto_next].each {|name|
+	%w[repeat shuffle auto_next].each {|name|
 		option_name = name.capitalize.gsub(/_(\w)/) { $1.upcase }
 
 		define_method name do

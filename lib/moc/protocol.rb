@@ -17,8 +17,12 @@ module Type
 		raise 'no read has been implemented'
 	end
 
-	def unpack (text)
-		read(StringIO.new(text))
+	def unpack (text, eat = false)
+		io = StringIO.new(text)
+
+		read(io).tap {
+			text[0, io.tell] = '' if eat
+		}
 	end
 end
 

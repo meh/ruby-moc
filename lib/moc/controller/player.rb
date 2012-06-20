@@ -53,7 +53,7 @@ class Player
 			controller.send_command :get_queue
 			controller.wait_for     :data
 
-			until (item = controller.read_item).nil?
+			while item = controller.read_item
 				block.call(item)
 			end
 		end

@@ -11,30 +11,7 @@
 module Moc; class Controller
 
 class Playlist
-	class Item < Struct.new(:file, :title_tags, :tags, :mtime)
-		attr_reader :controller
-
-		def initialize (controller)
-			@controller = controller
-			
-			if (file = controller.read_string).empty?
-				@nil = true
-			else
-				@nil = false
-
-				super(
-					file,
-					controller.read_string,
-					controller.read_tags,
-					controller.read_time
-				)
-			end
-		end
-
-		def nil?
-			@nil
-		end
-	end
+	Item = Struct.new(:file, :title_tags, :tags, :mtime)
 end
 
 Move = Struct.new(:from, :to)

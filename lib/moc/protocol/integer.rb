@@ -21,8 +21,8 @@ class Integer < BasicObject
 		@internal = value
 	end
 
-	def respond_to_missing? (id, include_private = false)
-		@internal.respond_to? id, include_private
+	def respond_to? (id, include_private = false)
+		return true if id == :pack || @internal.respond_to?(id, include_private)
 	end
 
 	def method_missing (id, *args, &block)

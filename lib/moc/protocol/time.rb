@@ -16,6 +16,10 @@ class Time < ::Time
 	def self.read (io)
 		at Integer.read(io)
 	end
+
+	def pack
+		Integer.new(to_i).pack
+	end
 end
 
 end; end
