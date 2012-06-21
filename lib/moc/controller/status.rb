@@ -70,8 +70,12 @@ class Status
 				end
 			}
 
+			def length
+				tags.time
+			end
+
 			def inspect
-				"#<#{self.class.name}: track=#{track} title=#{title} artist=#{artist} album=#{album} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{time}>"
+				"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{time}/#{length}>"
 			end
 		end
 
@@ -127,6 +131,14 @@ class Status
 				tags.send name
 			end
 		}
+
+		def length
+			tags.time
+		end
+
+		def inspect
+			"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{time}/#{length}>"
+		end
 	end
 
 	attr_reader :controller, :state, :volume, :song
