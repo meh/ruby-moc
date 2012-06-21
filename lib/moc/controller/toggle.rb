@@ -88,21 +88,29 @@ class Toggle
 	# toggle mixer channel
 	def mixer_channel
 		controller.send_command :toggle_mixer_channel
+
+		self
 	end
 
 	# toggle soft mixer
 	def soft_mixer
 		controller.send_command :toggle_softmixer
+
+		self
 	end
 
 	# toggle equalizer
 	def equalizer
 		controller.send_command :toggle_equalizer
+
+		self
 	end
 
 	# toggle mono
 	def mono
 		controller.send_command :toggle_mono
+
+		self
 	end
 end
 
