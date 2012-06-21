@@ -85,10 +85,10 @@ class Controller
 		Protocol::Event.read(@socket).tap {|event|
 			event.data = case event.to_sym
 				when :PLIST_ADD, :QUEUE_ADD
-					get_item
+					read_item
 				
 				when :PLIST_DEL, :QUEUE_DEL, :STATUS_MSG
-					get_string
+					read_string
 
 				when :FILE_TAGS
 					FileTags.new(read_string, read_tags)
