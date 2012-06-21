@@ -21,32 +21,32 @@ class Status
 
 			def channels
 				controller.send_command :get_channels
-				controller.get_integer
+				controller.get_integer.to_i
 			end
 
 			def rate
 				controller.send_command :get_rate
-				controller.get_integer
+				controller.get_integer.to_i
 			end
 
 			def bitrate
 				controller.send_command :get_bitrate
-				controller.get_integer
+				controller.get_integer.to_i
 			end
 			
 			def average_bitrate
 				controller.send_command :get_avg_bitrate
-				controller.get_integer
+				controller.get_integer.to_i
 			end
 
-			def time
+			def position
 				controller.send_command :get_ctime
-				controller.get_integer
+				controller.get_integer.to_i
 			end
 
 			def file
 				controller.send_command :get_sname
-				controller.get_string
+				controller.get_string.to_s
 			end
 
 			def tags
@@ -70,12 +70,12 @@ class Status
 				end
 			}
 
-			def length
+			def duration
 				tags.time
 			end
 
 			def inspect
-				"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{time}/#{length}>"
+				"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{position}/#{duration}>"
 			end
 		end
 
@@ -96,7 +96,7 @@ class Status
 
 		def volume
 			controller.send_command :get_mixer
-			controller.get_integer
+			controller.get_integer.to_i
 		end
 
 		def song
@@ -111,7 +111,7 @@ class Status
 	end
 
 	class Song
-		attr_reader :controller, :channels, :rate, :bitrate, :average_bitrate, :time, :file, :tags
+		attr_reader :controller, :channels, :rate, :bitrate, :average_bitrate, :position, :file, :tags
 
 		def initialize (controller)
 			@controller = controller
@@ -121,7 +121,7 @@ class Status
 			@rate            = @internal.rate
 			@bitrate         = @internal.bitrate
 			@average_bitrate = @internal.average_bitrate
-			@time            = @internal.time
+			@position        = @internal.position
 			@file            = @internal.file
 			@tags            = @internal.tags
 		end
@@ -132,12 +132,12 @@ class Status
 			end
 		}
 
-		def length
+		def duration
 			tags.time
 		end
 
 		def inspect
-			"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{time}/#{length}>"
+			"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{position}/#{duration}>"
 		end
 	end
 
@@ -157,6 +157,10 @@ class Status
 
 	def == (other)
 		super || state == other
+	end
+
+	def to_sym
+		state.to_sym
 	end
 end
 

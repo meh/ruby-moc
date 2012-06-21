@@ -133,22 +133,26 @@ class Controller
 	end
 
 	def read_item
-		return if (file = read_string).empty?
+		return if (file = read_string.to_s).empty?
 
-		title_tags = read_string
+		title_tags = read_string.to_s
 
 		Playlist::Item.new(file, title_tags.empty? ? nil : title_tags, read_tags, read_time)
 	end
 
 	def read_tags
-		title  = read_string
-		artist = read_string
-		album  = read_string
-		track  = read_integer
-		time   = read_integer
-		filled = read_integer
+		title  = read_string.to_s
+		artist = read_string.to_s
+		album  = read_string.to_s
+		track  = read_integer.to_i
+		time   = read_integer.to_i
+		filled = read_integer.to_i
 
-		if title.empty? && artist.empty? && album.empty? && track == -1 && time == -1 && filled == 0
+		title  = nil if title.empty?
+		artist = nil if artist.empty?
+		album  = nil if album.empty?
+
+		if title.nil? && artist.nil? && album.nil? && track == -1 && time == -1 && filled == 0
 			return nil
 		end
 
