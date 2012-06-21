@@ -14,7 +14,7 @@ class Integer < BasicObject
 	extend Type
 
 	def self.read (io)
-		new(io.read(4).unpack('l').first)
+		new(io.read(4).unpack('i').first)
 	end
 
 	def initialize (value)
@@ -34,7 +34,7 @@ class Integer < BasicObject
 	end
 
 	def pack
-		[self].pack('l')
+		[self].pack('i')
 	end
 end
 

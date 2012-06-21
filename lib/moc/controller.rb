@@ -69,6 +69,35 @@ class Controller
 		send Protocol::String.new(string.to_s)
 	end
 
+	def send_item (item)
+		if item
+			send_string item.file
+			send_string item.title_tags || ''
+			send_tags   item.tags
+			send_time   item.mtime
+		else
+			send_string ''
+		end
+	end
+
+	def send_tags (tags)
+		if tags
+			send_string  tags.title
+			send_string  tags.artist
+			send_string  tags.album
+			send_integer tags.track
+			send_integer tags.time
+			send_integer 0x01 | 0x02
+		else
+			send_string  ''
+			send_string  ''
+			send_string  ''
+			send_integer -1
+			send_integer -1
+			send_integer 0
+		end
+	end
+
 	def read_string
 		Protocol::String.read(@socket)
 	end
@@ -106,13 +135,24 @@ class Controller
 	def read_item
 		return if (file = read_string).empty?
 
-		Playlist::Item.new(file, read_string, read_tags, read_time)
+		title_tags = read_string
+
+		Playlist::Item.new(file, title_tags.empty? ? nil : title_tags, read_tags, read_time)
 	end
 
 	def read_tags
-		Tags.new(read_string, read_string, read_string, read_integer, read_integer).tap {
-			read_integer
-		}
+		title  = read_string
+		artist = read_string
+		album  = read_string
+		track  = read_integer
+		time   = read_integer
+		filled = read_integer
+
+		if title.empty? && artist.empty? && album.empty? && track == -1 && time == -1 && filled == 0
+			return nil
+		end
+
+		Tags.new(title, artist, album, track, time)
 	end
 
 	%w[string integer time event state].each {|name|
