@@ -155,7 +155,7 @@ class Controller
 		Tags.new(title, artist, album, track, time)
 	end
 
-	%w[string integer time state].each {|name|
+	%w[string integer time state tags].each {|name|
 		define_method "get_#{name}" do
 			wait_for :data
 
@@ -178,8 +178,6 @@ class Controller
 			block.call(event)
 		}
 	end
-
-	private :fire
 
 	def loop
 		while event = read_event
@@ -215,8 +213,8 @@ class Controller
 		@player ||= Player.new(self)
 	end
 
-	def status
-		@status ||= Status.new(self)
+	def status (live = false)
+		live ? (@status ||= Status::Live.new(self)) : Status.new(self)
 	end
 
 	def inspect
