@@ -51,6 +51,8 @@ class Controller
 
 	def send (object)
 		@socket.write object.respond_to?(:pack) ? object.pack : object.to_s
+
+		self
 	end
 
 	def send_command (command)
@@ -170,6 +172,8 @@ class Controller
 
 	def on (event = nil, &block)
 		@events[event ? nil : event.to_sym.upcase] << block
+
+		self
 	end
 
 	def fire (event)
@@ -182,12 +186,16 @@ class Controller
 		@events[name].each {|block|
 			block.call(event)
 		}
+
+		self
 	end
 
 	def loop
 		while event = read_event
 			fire event
 		end
+
+		self
 	end
 
 	def wait_for (name)
@@ -208,6 +216,8 @@ class Controller
 
 	def quit
 		send_command :quit
+
+		self
 	end
 
 	def toggle
