@@ -151,8 +151,9 @@ class Controller
 		title  = nil if title.empty?
 		artist = nil if artist.empty?
 		album  = nil if album.empty?
+		track  = nil if track == -1
 
-		if title.nil? && artist.nil? && album.nil? && track == -1 && time == -1 && filled == 0
+		if title.nil? && artist.nil? && album.nil? && track.nil? && time == -1 && filled == 0
 			return nil
 		end
 
