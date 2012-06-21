@@ -56,6 +56,8 @@ class Player
 			while item = controller.read_item
 				block.call(item)
 			end
+
+			self
 		end
 	end
 
@@ -67,49 +69,67 @@ class Player
 
 	def play
 		controller.send_command :unpause
+
+		self
 	end
 
 	# pause the current song
 	def pause
 		controller.send_command :pause
+
+		self
 	end
 
 	# unpause the current song
 	def unpause
 		controller.send_command :unpause
+
+		self
 	end
 
 	# stop the current song
 	def stop
 		controller.send_command :stop
+
+		self
 	end
 
 	# go to the next song in the playlist
 	def next
 		controller.send_command :next
+
+		self
 	end
 
 	# go to the previous song in the playlist
 	def prev
 		controller.send_command :prev
+
+		self
 	end
 
 	# change the volume
 	def volume (volume)
 		controller.send_command :set_mixer
 		controller.send_integer volume
+
+		self
 	end
 
-	# seek to the passed second
+	# seek of the passed seconds
 	def seek (second)
 		controller.send_command :seek
 		controller.send_integer second
+
+		self
 	end
 
-	# jump to the passed second
+	# jump to the passed seconds
 	def jump_to (second)
 		controller.send_command :jump_to
 		controller.send_integer second
+
+		self
 	end
 
 	# return the queue
