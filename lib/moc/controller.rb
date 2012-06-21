@@ -155,7 +155,7 @@ class Controller
 		Tags.new(title, artist, album, track, time)
 	end
 
-	%w[string integer time event state].each {|name|
+	%w[string integer time state].each {|name|
 		define_method "get_#{name}" do
 			wait_for :data
 
