@@ -16,12 +16,18 @@ class String < ::String
 	def self.read (io)
 		length = Integer.read(io)
 		string = io.read(length)
-
-		new(string)
+		
+		new(if string.force_encoding('UTF-8').valid_encoding?
+			string
+		elsif string.force_encoding('ISO-8859-1').valid_encoding?
+			string.encode!('UTF-8')
+		else
+			string.encode!('UTF-8', invalid: :replace, undef: :replace)
+		end)
 	end
 
 	def pack
-		Integer.new(length).pack << self
+		Integer.new(bytesize).pack << encode('UTF-8').force_encoding('BINARY')
 	end
 end
 
