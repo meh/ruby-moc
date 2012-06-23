@@ -66,6 +66,8 @@ class Status
 
 			%w[title artist album track].each {|name|
 				define_method name do
+					return unless tags
+
 					tags.send name
 				end
 			}
@@ -128,6 +130,8 @@ class Status
 
 		%w[title artist album track].each {|name|
 			define_method name do
+				return unless tags
+
 				tags.send name
 			end
 		}
