@@ -73,11 +73,11 @@ class Status
 			}
 
 			def duration
-				tags.time
+				tags.time if tags
 			end
 
 			def inspect
-				"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{position}/#{duration}>"
+				"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{position}/#{duration || ??}>"
 			end
 		end
 
@@ -137,11 +137,11 @@ class Status
 		}
 
 		def duration
-			tags.time
+			tags.time if tags
 		end
 
 		def inspect
-			"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{position}/#{duration}>"
+			"#<#{self.class.name}: track=#{track} title=#{title.inspect} artist=#{artist.inspect} album=#{album.inspect} channels=#{channels} bitrate=#{bitrate}(#{average_bitrate}) position=#{position}/#{duration || ??}>"
 		end
 	end
 
