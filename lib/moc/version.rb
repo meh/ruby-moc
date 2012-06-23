@@ -10,6 +10,6 @@
 
 module Moc
 	def self.version
-		'2.5.0.3'
+		'2.5.0.4'
 	end
 end
