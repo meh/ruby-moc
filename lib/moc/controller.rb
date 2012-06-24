@@ -33,8 +33,8 @@ class Controller
 	def initialize (path = '~/.moc/socket2')
 		@path   = File.expand_path(path)
 		@socket = UNIXSocket.new(@path)
-		
-		@events = Hash.new { |h, k| h[k] = [] }
+
+		@queue = []
 	end
 
 	def respond_to_missing? (id, include_private = false)
@@ -170,44 +170,35 @@ class Controller
 		end
 	}
 
-	def on (event = nil, &block)
-		@events[event ? nil : event.to_sym.upcase] << block
-
-		self
-	end
-
-	def fire (event)
-		name = event.to_sym
-
-		@events[nil].each {|block|
-			block.call(event)
-		}
-
-		@events[name].each {|block|
-			block.call(event)
-		}
-
-		self
-	end
+	def looping?; !!@looping; end
 
 	def loop (&block)
+		raise ArgumentError, 'no block given' unless block
+
+		raise 'already looping' if looping?
+
+		@looping = true
+
 		send_command :send_events
 
 		while event = read_event
-			block.call(event) if block
+			block.call event
 
-			fire event
+			until @queue.empty?
+				block.call @queue.first
+
+				@queue.shift
+			end
 		end
 
 		self
 	ensure
-		@socket.close
-		@socket = UNIXSocket.new(@path)
+		@looping = false
 	end
 
 	def wait_for (name)
 		while (event = read_event) != name
-			fire event
+			@queue << event if looping?
 		end
 
 		event
