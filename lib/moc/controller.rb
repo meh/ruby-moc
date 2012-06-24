@@ -190,12 +190,19 @@ class Controller
 		self
 	end
 
-	def loop
+	def loop (&block)
+		send_command :send_events
+
 		while event = read_event
+			block.call(event) if block
+
 			fire event
 		end
 
 		self
+	ensure
+		@socket.close
+		@socket = UNIXSocket.new(@path)
 	end
 
 	def wait_for (name)
@@ -218,6 +225,22 @@ class Controller
 		send_command :quit
 
 		self
+	end
+
+	def lock
+		send_command :lock
+	end
+
+	def unlock
+		send_command :unlock
+	end
+
+	def synchronize (&block)
+		lock
+
+		block.call
+	ensure
+		unlock
 	end
 
 	def toggle

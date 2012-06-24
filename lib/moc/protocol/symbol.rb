@@ -25,7 +25,7 @@ class Symbol
 		@internal = value.respond_to?(:to_i) ? self.class.codes.key(value.to_i) : value.to_sym.upcase
 
 		unless @internal && self.class.codes.member?(@internal)
-			raise ArgumentError, 'invalid symbol'
+			raise ArgumentError, "invalid symbol #{value}"
 		end
 	end
 
