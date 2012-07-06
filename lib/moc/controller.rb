@@ -212,7 +212,7 @@ class Controller
 		false
 	end
 
-	def quit
+	def quit!
 		send_command :quit
 
 		self

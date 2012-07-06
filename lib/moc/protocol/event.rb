@@ -58,6 +58,10 @@ class Event < Symbol
 
 		super
 	end
+
+	def inspect
+		"#<#{self.class.name}: #{to_s}#{" #{data.inspect}" if data}>"
+	end
 end
 
 end; end
