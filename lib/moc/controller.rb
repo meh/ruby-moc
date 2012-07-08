@@ -208,7 +208,7 @@ class Controller
 		send_command :ping
 
 		read_event == :pong
-	rescue
+	rescue Exception
 		false
 	end
 
