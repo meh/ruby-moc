@@ -27,7 +27,7 @@ class String < ::String
 	end
 
 	def pack
-		(Integer.new(bytesize).pack << self).force_encoding('BINARY')
+		Integer.new(bytesize).pack << self.dup.force_encoding('BINARY')
 	end
 end
 
